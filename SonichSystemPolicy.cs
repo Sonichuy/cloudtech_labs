@@ -173,7 +173,7 @@ public sealed class SonichSystemPolicy : ISystemPolicy
 
         var waited = context.Now - candidate.QueuedAt;
         var workEstimate = TimeSpan.FromSeconds(candidate.Request.EstimatedWorkSeconds);
-        var patienceEstimate = TimeSpan.FromSeconds(25);
+        var patienceEstimate = TimeSpan.FromSeconds(35);
 
         if (waited + workEstimate > patienceEstimate)
             return JobAssignmentDecision.Reject(candidate.Id);
