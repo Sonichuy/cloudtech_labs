@@ -15,11 +15,11 @@ public sealed class SonichSystemPolicy : ISystemPolicy
         private readonly ConcurrentQueue<TimeSpan> _recentSuccesses = new();
         private const int MaxSamples = 30;
 
-        private double _timeoutMultiplier = 1.2;
+        private double _timeoutMultiplier = 12.0;
         private readonly object _sync = new();
 
         private static readonly TimeSpan MinTimeout = TimeSpan.FromMilliseconds(50);
-        private static readonly TimeSpan MaxTimeout = TimeSpan.FromMilliseconds(2000);
+        private static readonly TimeSpan MaxTimeout = TimeSpan.FromMilliseconds(20000);
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromMilliseconds(200);
 
         public TimeSpan GetTimeout(RequestContext context, Random random)
@@ -46,14 +46,14 @@ public sealed class SonichSystemPolicy : ISystemPolicy
                 lock (_sync)
                 {
                     if (_recentSuccesses.Count >= 10)
-                        _timeoutMultiplier = Math.Max(1.1, _timeoutMultiplier - 0.01);
+                        _timeoutMultiplier = Math.Max(11.0, _timeoutMultiplier - 1.0);
                 }
                 return RetryDecision.NoRetry();
             }
 
             lock (_sync)
             {
-                _timeoutMultiplier = Math.Min(2.0, _timeoutMultiplier + 0.1);
+                _timeoutMultiplier = Math.Min(20.0, _timeoutMultiplier + 10.0);
             }
 
             if (observation.Attempt >= 3) return RetryDecision.NoRetry();
